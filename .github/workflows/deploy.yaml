@@ -38,7 +38,7 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync output/ s3://${{ vars.S3_BUCKET_NAME }} --delete --region ${{ vars.AWS_REGION }}
+          aws s3 sync .output/public s3://${{ vars.S3_BUCKET_NAME }} --delete --region ${{ vars.AWS_REGION }}
 
       - name: Invalidate CloudFront Cache
         if: github.ref == 'refs/heads/main'
