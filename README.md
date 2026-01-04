@@ -1,42 +1,25 @@
-# Nuxt 3 Minimal Starter
+# lysz210.host 🚀
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Questo repository ospita l'applicazione principale per **lysz210.me**. L'infrastruttura è completamente gestita come codice (IaC) e il deploy è automatizzato tramite una pipeline CI/CD.
 
-## Setup
+## 🏗️ Architettura Stack
+Il progetto utilizza un'architettura serverless su AWS per garantire massime prestazioni e costi minimi:
 
-Make sure to install the dependencies:
+* **Hosting:** Amazon S3 (Static Website Hosting).
+* **CDN:** Amazon CloudFront (per la distribuzione globale e HTTPS).
+* **DNS:** Amazon Route 53.
+* **Infrastructure as Code:** Terraform (HCP Terraform).
+* **CI/CD:** GitHub Actions.
 
-```bash
-# yarn
-yarn install
 
-# npm
-npm install
 
-# pnpm
-pnpm install --shamefully-hoist
-```
+## 🛠️ Tecnologie Utilizzate
+* **Node.js v24.x** (Runtime per la generazione degli asset)
+* **Terraform** (Gestione infrastruttura)
+* **OIDC (OpenID Connect)** (Autenticazione sicura tra GitHub e AWS senza chiavi statiche)
 
-## Development Server
+## 🚀 Pipeline di Deploy
+Il deploy avviene automaticamente tramite GitHub Actions. La logica dei branch è la seguente:
 
-Start the development server on http://localhost:3000
-
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1.  **develop (Default):** Branch di sviluppo. Ogni push su questo branch attiva il build per testare l'integrità del codice.
+2.  **main:** Branch di produzione. Ogni merge su `main` attiva il deploy automatico sul bucket S3 e l'invalidazione della cache di CloudFront (solo per i file `.html`).
