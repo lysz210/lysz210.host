@@ -4,11 +4,7 @@
     </div>
 </template>
 <script setup lang="ts">
-// definePageMeta({
-//   middleware: [
-//     function () {
-//       return navigateTo('/en')
-//     }
-//   ],
-// });
+const localPath = useLocalePath()
+await navigateTo(localPath('education'))
+
 </script>
