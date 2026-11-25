@@ -6,8 +6,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/eslint',
-    '@nuxt/hints',
     '@pinia/nuxt',
+    '@nuxtjs/i18n',
   ],
   nitro: {
     prerender: {
@@ -38,6 +38,21 @@ export default defineNuxtConfig({
           cvPdf: '/CV_lingyong_sun.pdf',
           meSocialAccounts: '/me/social-accounts'
       }
+  },
+
+  i18n: {
+    langDir: 'lang',
+    customRoutes: 'page',
+    locales: [
+      { code: 'en', name: 'English', file: 'en.yaml'},
+      { code: 'it', name: 'Italiano', file: 'it.yaml'}
+    ],
+    strategy: 'prefix',
+    defaultLocale: 'en',
+    compilation: {
+      strictMessage: false
+    },
+    vueI18n: 'vue-i18n.config.ts'
   },
 
 })
