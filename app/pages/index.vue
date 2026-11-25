@@ -4,11 +4,11 @@
     </div>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: [
-    function () {
-      return navigateTo('/en')
-    }
-  ],
-});
+// definePageMeta({
+//   middleware: [
+//     function () {
+//       return navigateTo('/en')
+//     }
+//   ],
+// });
 </script>

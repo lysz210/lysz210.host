@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="blue-grey" dark>
-      <v-toolbar-title>Lysz210</v-toolbar-title>
+      <v-toolbar-title>{{ personalData.name }} {{ personalData.surname }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <transition-group name="fade">
         <v-btn
@@ -37,17 +37,28 @@
             :key="locale.code"
             v-for="locale in locales"
             :prepend-avatar="locale.flag"
-            :to="{ name: 'lang', params: { lang: locale.code }}"
+            :to="switchLocalePath(locale.code)"
           >
             <v-list-item-title>{{ locale.name.toUpperCase() }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
+      <template v-slot:extension>
+        <v-tabs grow align-tabs="center">
+          <v-tab :to="localPath({ name: 'education' })">{{ $t('istruzione.title') }}</v-tab>
+          <v-tab :to="localPath({ name: 'experience' })">{{ $t('lavoro.title') }}</v-tab>
+          <v-tab :to="localPath({ name: 'personal-skills' })">{{ $t('competenze.title') }}</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
     <v-main>
       <slot></slot>
+
     </v-main>
     <v-footer app color="blue-grey">
+
+      <v-btn v-if="pdfSrc" :href="pdfSrc" target="_blank" icon="fas fa-print" dark color="green" position="absolute" elevation="12"
+        class="print-btn"></v-btn>
       <v-row justify="center">
         <v-col class="py-4 text-center white--text">
           &copy;2019 —
@@ -58,53 +69,34 @@
   </v-app>
 </template>
 <style>
-html {
-  overflow-y: auto;
+.print-btn {
+  position: fixed;
+  right: calc(1.5rem + env(safe-area-inset-right));
+  bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  z-index: 50;
 }
 </style>
 
 <script setup lang="ts">
-import { of } from 'rxjs'
-import { ajax } from 'rxjs/ajax'
-import { mergeMap, concatMap, delay, filter } from 'rxjs/operators'
 import italian from 'flag-icons/flags/1x1/it.svg?url'
 import english from 'flag-icons/flags/1x1/gb.svg?url'
-
+const { locale } = useI18n()
+const localPath = useLocalePath()
+const switchLocalePath = useSwitchLocalePath()
 const {
-  public: {
-    cvBasePath: basePath,
-    meSocialAccounts: socialAccounts
-  }
-} = useRuntimeConfig()
+  socials,
+  personalData,
+  pdfSrc,
+} = storeToRefs(useMeStore())
 
-const locales = [
+const locales: {code: string, name: string, flag: any}[] = [
   { code: 'en', name: 'English', flag: english },
   { code: 'it', name: 'Italian', flag: italian }
 ]
 
 const currentLocale = computed(() => {
-  const lang = useRoute()?.params?.lang || 'en'
+  const lang = locale.value|| 'en'
   return locales.find(locale => locale.code === lang)
 })
-const socials = ref<Array<any>>([])
-console.log(useRoute())
 
-onMounted(() => {
-  ajax({
-    url: `${basePath}/api/${useRoute()?.params?.lang || 'en'}${socialAccounts}`,
-    method: 'GET',
-    crossDomain: true,
-    withCredentials: false
-  })
-  .pipe(
-    filter(response => !!response?.response),
-    mergeMap((response: any) => response.response),
-    concatMap(element => of(element).pipe(delay(700)))
-  )
-  .subscribe({
-    next: (element) => {
-      socials.value.push(element)
-    }
-  })
-})
 </script>
